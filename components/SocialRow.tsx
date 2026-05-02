@@ -28,7 +28,7 @@ export default function SocialRow({ variant = "light" }: { variant?: Variant }) 
     <div className="flex flex-wrap items-center gap-3">
       <a href={TOKEN.dexscreener} target="_blank" rel="noreferrer" className={`${cls} bg-blood text-bone border-bone hover:bg-blood-deep hover:shadow-[6px_6px_0_0_#050505]`}>
         {DEX_ICON}
-        <span>Buy on Dex</span>
+        <span>Dexscreener</span>
         <ExternalLink className="size-4 opacity-80" />
       </a>
       <a href={TOKEN.telegram} target="_blank" rel="noreferrer" className={cls}>

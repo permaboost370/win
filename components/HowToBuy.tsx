@@ -15,7 +15,7 @@ const STEPS = [
   {
     n: "03",
     title: "Open Dexscreener",
-    body: "Click 'Buy on Dex'. Confirm the pair, set slippage, swap. Welcome to the winning team.",
+    body: "Click 'Dexscreener'. Confirm the pair, set slippage, swap. Welcome to the winning team.",
   },
   {
     n: "04",
