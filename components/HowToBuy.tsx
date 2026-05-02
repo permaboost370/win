@@ -41,7 +41,7 @@ export default function HowToBuy() {
           {STEPS.map((s) => (
             <li
               key={s.n}
-              className="relative border-4 border-ink bg-bone p-5 shadow-[8px_8px_0_0_#d92121] plate"
+              className="relative border-4 border-ink bg-bone p-5 shadow-[8px_8px_0_0_#e81d1d] plate"
             >
               <div className="font-display text-6xl leading-none text-blood">
                 {s.n}
