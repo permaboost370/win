@@ -4,6 +4,7 @@ import Manifesto from "@/components/Manifesto";
 import Quotes from "@/components/Quotes";
 import HowToBuy from "@/components/HowToBuy";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
       <Quotes />
       <HowToBuy />
       <Footer />
+      <BackToTop />
     </main>
   );
 }
