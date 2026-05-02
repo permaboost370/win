@@ -46,7 +46,7 @@ export default function RootLayout({
       lang="en"
       className={`${anton.variable} ${inter.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-cream text-ink">
+      <body className="min-h-full flex flex-col bg-ink text-bone">
         {children}
       </body>
     </html>

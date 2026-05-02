@@ -12,8 +12,10 @@ export default function Marquee({
   const items = Array.from({ length: 8 }, (_, i) => i);
   return (
     <div
-      className={`relative overflow-hidden border-y-4 border-ink ${
-        invert ? "bg-ink text-gold" : "bg-gold text-ink"
+      className={`relative overflow-hidden border-y-4 ${
+        invert
+          ? "border-bone bg-bone text-ink"
+          : "border-bone bg-blood text-bone"
       } ${className}`}
     >
       <div

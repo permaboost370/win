@@ -2,23 +2,23 @@ import Image from "next/image";
 
 export default function Quotes() {
   return (
-    <section id="quotes" className="relative bg-ink text-cream">
+    <section id="quotes" className="relative bg-ink text-bone bg-smoke-sky grain-overlay">
       <div className="mx-auto max-w-7xl px-4 sm:px-8 py-16 sm:py-24">
         <div className="flex flex-col gap-3 mb-10 sm:mb-14">
-          <span className="font-mono text-xs uppercase tracking-[0.3em] text-gold">
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-blood">
             § Words of the Don
           </span>
-          <h2 className="font-display uppercase tracking-tight text-5xl sm:text-7xl leading-[0.9]">
-            Inspirational <span className="text-gold">copium.</span>
+          <h2 className="font-display uppercase tracking-tight text-5xl sm:text-7xl leading-[0.9] glyph-shadow-tight">
+            Inspirational <span className="text-blood">copium.</span>
           </h2>
-          <p className="max-w-2xl text-cream/75">
+          <p className="max-w-2xl text-bone/75">
             Wisdom from the only candidate ever to invent winning. Print it,
             tweet it, paste it in the group chat after a green daily.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
-          <figure className="group border-4 border-cream bg-cream text-ink shadow-[10px_10px_0_0_#f4c430] transition-transform hover:-translate-y-1">
+          <figure className="group border-4 border-bone bg-bone text-ink shadow-[10px_10px_0_0_#d92121] plate">
             <div className="relative aspect-[4/3] overflow-hidden">
               <Image
                 src="/img1.jpg"
@@ -34,7 +34,7 @@ export default function Quotes() {
             </figcaption>
           </figure>
 
-          <figure className="group border-4 border-cream bg-cream text-ink shadow-[10px_10px_0_0_#c81c1c] transition-transform hover:-translate-y-1">
+          <figure className="group border-4 border-bone bg-bone text-ink shadow-[10px_10px_0_0_#d92121] plate">
             <div className="relative aspect-[4/3] overflow-hidden">
               <Image
                 src="/img2.jpg"

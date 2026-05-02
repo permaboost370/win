@@ -26,7 +26,7 @@ const STEPS = [
 
 export default function HowToBuy() {
   return (
-    <section id="how" className="relative bg-gold text-ink">
+    <section id="how" className="relative bg-bone text-ink">
       <div className="mx-auto max-w-7xl px-4 sm:px-8 py-16 sm:py-24">
         <div className="flex flex-col gap-3 mb-10 sm:mb-14">
           <span className="font-mono text-xs uppercase tracking-[0.3em] text-blood">
@@ -41,7 +41,7 @@ export default function HowToBuy() {
           {STEPS.map((s) => (
             <li
               key={s.n}
-              className="relative border-4 border-ink bg-cream p-5 shadow-[8px_8px_0_0_#0a0a0a]"
+              className="relative border-4 border-ink bg-bone p-5 shadow-[8px_8px_0_0_#d92121] plate"
             >
               <div className="font-display text-6xl leading-none text-blood">
                 {s.n}
@@ -49,7 +49,7 @@ export default function HowToBuy() {
               <div className="font-display uppercase text-2xl mt-2">
                 {s.title}
               </div>
-              <p className="mt-2 text-sm opacity-80 leading-relaxed">{s.body}</p>
+              <p className="mt-2 text-sm text-ink/75 leading-relaxed">{s.body}</p>
             </li>
           ))}
         </ol>
@@ -60,7 +60,7 @@ export default function HowToBuy() {
             href={TOKEN.dexscreener}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex w-fit items-center gap-2 border-4 border-ink bg-blood text-cream px-5 py-3 font-display uppercase tracking-wide text-lg shadow-[6px_6px_0_0_#0a0a0a] hover:-translate-y-[2px] transition-all"
+            className="inline-flex w-fit items-center gap-2 border-4 border-ink bg-blood text-bone px-5 py-3 font-display uppercase tracking-wide text-lg shadow-[6px_6px_0_0_#050505] hover:-translate-y-[2px] transition-all"
           >
             Buy $WINNING →
           </a>

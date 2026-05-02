@@ -7,24 +7,12 @@ import SocialRow from "./SocialRow";
 
 export default function Hero() {
   return (
-    <section className="relative isolate overflow-hidden bg-ink text-cream">
-      <div className="absolute inset-0 -z-10">
-        <Image
-          src="/banner.jpg"
-          alt="Can't Stop. Won't Stop."
-          fill
-          priority
-          className="object-cover object-center opacity-90"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/10 to-ink/85" />
-      </div>
-
-      <div className="mx-auto flex min-h-[88vh] max-w-7xl flex-col justify-between px-4 sm:px-8 py-6 sm:py-10">
+    <section className="relative isolate overflow-hidden bg-smoke-sky text-bone grain-overlay">
+      <div className="mx-auto max-w-7xl px-4 sm:px-8 py-6 sm:py-10 flex flex-col gap-10 lg:gap-14 min-h-[92vh]">
         {/* Top bar */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="size-9 sm:size-10 grid place-items-center bg-gold border-2 border-ink font-display text-xl text-ink rotate-[-6deg] shadow-[3px_3px_0_0_#0a0a0a]">
+            <div className="size-10 grid place-items-center bg-blood border-2 border-bone font-display text-xl text-bone rotate-[-6deg] shadow-[3px_3px_0_0_#050505]">
               W
             </div>
             <span className="font-display text-2xl sm:text-3xl tracking-wider">
@@ -33,45 +21,63 @@ export default function Hero() {
           </div>
           <a
             href="#how"
-            className="hidden md:inline-flex items-center gap-2 border-2 border-cream/60 px-3 py-2 text-xs font-mono uppercase tracking-widest hover:bg-cream hover:text-ink transition"
+            className="hidden md:inline-flex items-center gap-2 border-2 border-bone/60 px-3 py-2 text-xs font-mono uppercase tracking-widest hover:bg-bone hover:text-ink transition"
           >
             How to win →
           </a>
         </div>
 
-        {/* Big stamp */}
-        <div className="flex flex-col gap-6 sm:gap-8 pb-6 sm:pb-10">
+        {/* Main hero grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center flex-1">
+          {/* Left: copy */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex flex-col gap-4"
+            className="lg:col-span-5 flex flex-col gap-6"
           >
-            <span className="inline-flex w-fit items-center gap-2 bg-gold text-ink border-2 border-ink px-3 py-1 font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] shadow-[4px_4px_0_0_#0a0a0a]">
-              <span className="size-2 rounded-full bg-blood animate-pulse" />
+            <span className="inline-flex w-fit items-center gap-2 bg-blood text-bone border-2 border-bone px-3 py-1 font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] shadow-[4px_4px_0_0_#050505]">
+              <span className="size-2 rounded-full bg-bone animate-pulse" />
               Live · Memecoin
             </span>
-            <h1 className="font-display tracking-tight text-[18vw] leading-[0.85] sm:text-[12rem] uppercase">
-              <span className="block text-cream glyph-shadow">$Winning</span>
+            <h1 className="font-display tracking-tight text-[18vw] leading-[0.85] sm:text-[10rem] lg:text-[9rem] uppercase">
+              <span className="block text-bone glyph-shadow">$Winning</span>
             </h1>
-            <p className="max-w-2xl font-sans text-base sm:text-lg text-cream/85">
+            <p className="max-w-xl font-sans text-base sm:text-lg text-bone/80">
               The ticker for relentless determination. Built on the only mantra
               that matters:{" "}
-              <span className="font-bold text-gold">
+              <span className="font-bold text-blood">
                 can&apos;t stop, won&apos;t stop.
               </span>{" "}
               Hustle hard. Win harder. Hold forever.
             </p>
+
+            <div className="flex flex-col gap-4">
+              <SocialRow variant="dark" />
+              <CopyCA variant="dark" />
+            </div>
           </motion.div>
 
+          {/* Right: poster image */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
-            className="flex flex-col gap-4"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+            className="lg:col-span-7"
           >
-            <SocialRow variant="dark" />
-            <CopyCA variant="dark" />
+            <div className="relative aspect-[16/10] w-full border-4 border-bone shadow-[12px_12px_0_0_#d92121] overflow-hidden">
+              <Image
+                src="/demo2.jpg"
+                alt="Can't Stop. Won't Stop."
+                fill
+                priority
+                className="object-cover object-center"
+                sizes="(max-width: 1024px) 100vw, 60vw"
+              />
+              <div className="absolute top-3 left-3 bg-ink border-2 border-bone px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-bone">
+                The Doctrine
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>

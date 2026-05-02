@@ -23,11 +23,11 @@ const POINTS = [
 
 export default function Manifesto() {
   return (
-    <section id="manifesto" className="relative bg-cream text-ink">
+    <section id="manifesto" className="relative bg-charcoal text-bone grain-overlay">
       <div className="mx-auto max-w-7xl px-4 sm:px-8 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
         {/* Image card */}
         <div className="lg:col-span-5">
-          <div className="relative aspect-[3/4] w-full border-4 border-ink shadow-[10px_10px_0_0_#0a0a0a] overflow-hidden">
+          <div className="relative aspect-[3/4] w-full border-4 border-bone shadow-[10px_10px_0_0_#d92121] overflow-hidden">
             <Image
               src="/img.jpg"
               alt="Can't Stop, Won't Stop"
@@ -35,7 +35,7 @@ export default function Manifesto() {
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 40vw"
             />
-            <div className="absolute top-3 left-3 bg-gold border-2 border-ink px-2 py-1 font-mono text-[10px] uppercase tracking-widest">
+            <div className="absolute top-3 left-3 bg-blood border-2 border-bone px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-bone">
               The Manifesto
             </div>
           </div>
@@ -47,15 +47,15 @@ export default function Manifesto() {
             <span className="font-mono text-xs uppercase tracking-[0.3em] text-blood">
               § Why $WINNING
             </span>
-            <h2 className="font-display uppercase tracking-tight text-5xl sm:text-7xl leading-[0.9]">
+            <h2 className="font-display uppercase tracking-tight text-5xl sm:text-7xl leading-[0.9] glyph-shadow-tight">
               A coin for the <span className="text-blood">hustlers</span>.
             </h2>
-            <p className="max-w-xl text-base sm:text-lg leading-relaxed">
+            <p className="max-w-xl text-base sm:text-lg leading-relaxed text-bone/85">
               &ldquo;Can&rsquo;t stop, won&rsquo;t stop&rdquo; is more than a
               phrase. It&rsquo;s a refusal to be deterred. It&rsquo;s the
               ambition that builds skylines, breaks records and prints generational
-              bags. <span className="font-bold">$WINNING</span> is that mantra,
-              tokenized.
+              bags. <span className="font-bold text-bone">$WINNING</span> is
+              that mantra, tokenized.
             </p>
           </div>
 
@@ -63,13 +63,13 @@ export default function Manifesto() {
             {POINTS.map((p) => (
               <li
                 key={p.n}
-                className="border-4 border-ink bg-cream p-4 shadow-[6px_6px_0_0_#0a0a0a]"
+                className="border-4 border-bone bg-ink p-4 shadow-[6px_6px_0_0_#d92121] plate"
               >
                 <div className="font-mono text-xs text-blood">{p.n}</div>
-                <div className="font-display uppercase text-2xl mt-1">
+                <div className="font-display uppercase text-2xl mt-1 text-bone">
                   {p.title}
                 </div>
-                <p className="text-sm mt-2 opacity-80">{p.body}</p>
+                <p className="text-sm mt-2 text-bone/75">{p.body}</p>
               </li>
             ))}
           </ul>

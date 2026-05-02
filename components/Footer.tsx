@@ -3,33 +3,33 @@ import SocialRow from "./SocialRow";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-ink text-cream border-t-4 border-cream">
+    <footer className="relative bg-ink text-bone border-t-4 border-bone">
       <div className="mx-auto max-w-7xl px-4 sm:px-8 py-12 sm:py-16 flex flex-col gap-10">
         <div className="flex flex-col lg:flex-row gap-10 justify-between">
           <div className="flex flex-col gap-4 max-w-md">
             <div className="flex items-center gap-3">
-              <div className="size-10 grid place-items-center bg-gold border-2 border-cream font-display text-xl text-ink rotate-[-6deg]">
+              <div className="size-10 grid place-items-center bg-blood border-2 border-bone font-display text-xl text-bone rotate-[-6deg]">
                 W
               </div>
               <span className="font-display text-3xl tracking-wider">
                 $WINNING
               </span>
             </div>
-            <p className="text-cream/70 text-sm leading-relaxed">
+            <p className="text-bone/70 text-sm leading-relaxed">
               The ticker for relentless determination. Built by degens, for
-              degens. <span className="text-gold">Can&apos;t stop. Won&apos;t stop.</span>
+              degens. <span className="text-blood font-bold">Can&apos;t stop. Won&apos;t stop.</span>
             </p>
           </div>
 
           <div className="flex flex-col gap-3">
-            <span className="font-mono text-xs uppercase tracking-[0.3em] text-gold">
+            <span className="font-mono text-xs uppercase tracking-[0.3em] text-blood">
               Find us
             </span>
             <SocialRow variant="dark" />
           </div>
         </div>
 
-        <div className="border-t border-cream/20 pt-6 flex flex-col gap-4 text-xs text-cream/60">
+        <div className="border-t border-bone/20 pt-6 flex flex-col gap-4 text-xs text-bone/60">
           <p className="font-mono break-all">
             CA: {TOKEN.contract}
           </p>

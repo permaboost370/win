@@ -19,14 +19,14 @@ export default function SocialRow({ variant = "light" }: { variant?: Variant }) 
   const dark = variant === "dark";
   const base =
     "inline-flex items-center gap-2 border-2 px-4 py-3 font-display tracking-wide uppercase text-sm sm:text-base transition-all hover:-translate-y-[2px] active:translate-y-0";
-  const lightStyles = "border-ink bg-cream text-ink hover:shadow-[6px_6px_0_0_#0a0a0a]";
+  const lightStyles = "border-ink bg-bone text-ink hover:shadow-[6px_6px_0_0_#050505]";
   const darkStyles =
-    "border-cream bg-ink text-cream hover:shadow-[6px_6px_0_0_#f4c430]";
+    "border-bone bg-ink text-bone hover:shadow-[6px_6px_0_0_#d92121]";
   const cls = `${base} ${dark ? darkStyles : lightStyles}`;
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <a href={TOKEN.dexscreener} target="_blank" rel="noreferrer" className={`${cls} bg-blood text-cream border-ink hover:bg-blood/90`}>
+      <a href={TOKEN.dexscreener} target="_blank" rel="noreferrer" className={`${cls} bg-blood text-bone border-bone hover:bg-blood-deep hover:shadow-[6px_6px_0_0_#050505]`}>
         {DEX_ICON}
         <span>Buy on Dex</span>
         <ExternalLink className="size-4 opacity-80" />
