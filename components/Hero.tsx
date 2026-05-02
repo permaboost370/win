@@ -43,10 +43,6 @@ export default function Hero() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="lg:col-span-5 flex flex-col gap-6"
           >
-            <span className="inline-flex w-fit items-center gap-2 bg-blood text-bone border-2 border-bone px-3 py-1 font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] shadow-[4px_4px_0_0_#050505]">
-              <span className="size-2 rounded-full bg-bone animate-pulse" />
-              Live · Memecoin
-            </span>
             <h1 className="font-display tracking-tight text-[18vw] leading-[0.85] sm:text-[10rem] lg:text-[9rem] uppercase">
               <span className="block text-bone glyph-shadow">$Winning</span>
             </h1>
