@@ -14,8 +14,8 @@ const STEPS = [
   },
   {
     n: "03",
-    title: "Open Dexscreener",
-    body: "Click 'Dexscreener'. Confirm the pair, set slippage, swap. Welcome to the winning team.",
+    title: "Buy on Uniswap",
+    body: "Head to app.uniswap.org, paste the CA in the token field, set slippage (5-10% for memecoins) and swap. Welcome to the winning team.",
   },
   {
     n: "04",
