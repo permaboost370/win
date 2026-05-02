@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-cream: #f5efe1;
+  --color-ink: #0a0a0a;
+  --color-blood: #c81c1c;
+  --color-gold: #f4c430;
+  --color-gold-deep: #c79900;
+  --color-stone: #1a1a1a;
+
+  --font-display: var(--font-anton), "Impact", system-ui, sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  --shadow-brutal: 6px 6px 0 0 #0a0a0a;
+  --shadow-brutal-lg: 10px 10px 0 0 #0a0a0a;
+  --shadow-brutal-gold: 6px 6px 0 0 #f4c430;
+}
+
+:root {
+  --background: #f5efe1;
+  --foreground: #0a0a0a;
+  color-scheme: light;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+.animate-marquee-fast {
+  animation: marquee 14s linear infinite;
+}
+
+/* Subtle film grain for the brutalist vibe */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Subtle text shadow for hero glyph */
+.glyph-shadow {
+  text-shadow: 6px 6px 0 #0a0a0a;
+}
+.glyph-shadow-gold {
+  text-shadow: 6px 6px 0 #f4c430;
+}
+
+/* Star burst seal */
+.seal-spin {
+  animation: spin 18s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

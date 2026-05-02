@@ -1,0 +1,54 @@
+import type { Metadata } from "next";
+import { Anton, Inter, JetBrains_Mono } from "next/font/google";
+import "./globals.css";
+
+const anton = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const mono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "$WINNING — Can't Stop. Won't Stop.",
+  description:
+    "$WINNING — the meme coin built on relentless determination. Can't stop. Won't stop. Hustle hard. Win harder.",
+  openGraph: {
+    title: "$WINNING — Can't Stop. Won't Stop.",
+    description:
+      "The meme coin built on relentless determination. Can't stop. Won't stop.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "$WINNING — Can't Stop. Won't Stop.",
+    description:
+      "The meme coin built on relentless determination. Can't stop. Won't stop.",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${anton.variable} ${inter.variable} ${mono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col bg-cream text-ink">
+        {children}
+      </body>
+    </html>
+  );
+}
