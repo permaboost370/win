@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="flex flex-col lg:flex-row gap-10 justify-between">
           <div className="flex flex-col gap-4 max-w-md">
             <div className="flex items-center gap-3">
-              <div className="relative size-12 border-2 border-bone overflow-hidden shadow-[3px_3px_0_0_#e81d1d]">
+              <div className="relative size-12 border-2 border-bone overflow-hidden shadow-[3px_3px_0_0_#d92121]">
                 <Image
                   src="/logowin.jpg"
                   alt="$WINNING logo"

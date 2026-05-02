@@ -23,11 +23,11 @@ const POINTS = [
 
 export default function Manifesto() {
   return (
-    <section id="manifesto" className="relative bg-ink text-bone">
+    <section id="manifesto" className="relative bg-charcoal text-bone grain-overlay">
       <div className="mx-auto max-w-7xl px-4 sm:px-8 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
         {/* Image card */}
         <div className="lg:col-span-5">
-          <div className="relative aspect-[3/4] w-full border-4 border-bone shadow-[10px_10px_0_0_#e81d1d] overflow-hidden">
+          <div className="relative aspect-[3/4] w-full border-4 border-bone shadow-[10px_10px_0_0_#d92121] overflow-hidden">
             <Image
               src="/img.jpg"
               alt="Can't Stop, Won't Stop"
@@ -63,7 +63,7 @@ export default function Manifesto() {
             {POINTS.map((p) => (
               <li
                 key={p.n}
-                className="border-4 border-bone bg-charcoal p-4 shadow-[6px_6px_0_0_#e81d1d] plate"
+                className="border-4 border-bone bg-ink p-4 shadow-[6px_6px_0_0_#d92121] plate"
               >
                 <div className="font-mono text-xs text-blood">{p.n}</div>
                 <div className="font-display uppercase text-2xl mt-1 text-bone">

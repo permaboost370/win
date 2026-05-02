@@ -21,7 +21,7 @@ export default function SocialRow({ variant = "light" }: { variant?: Variant }) 
     "inline-flex items-center gap-2 border-2 px-4 py-3 font-display tracking-wide uppercase text-sm sm:text-base transition-all hover:-translate-y-[2px] active:translate-y-0";
   const lightStyles = "border-ink bg-bone text-ink hover:shadow-[6px_6px_0_0_#050505]";
   const darkStyles =
-    "border-bone bg-ink text-bone hover:shadow-[6px_6px_0_0_#e81d1d]";
+    "border-bone bg-ink text-bone hover:shadow-[6px_6px_0_0_#d92121]";
   const cls = `${base} ${dark ? darkStyles : lightStyles}`;
 
   return (
