@@ -12,8 +12,15 @@ export default function Hero() {
         {/* Top bar */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="size-10 grid place-items-center bg-blood border-2 border-bone font-display text-xl text-bone rotate-[-6deg] shadow-[3px_3px_0_0_#050505]">
-              W
+            <div className="relative size-11 sm:size-12 border-2 border-bone overflow-hidden shadow-[3px_3px_0_0_#d92121]">
+              <Image
+                src="/logowin.jpg"
+                alt="$WINNING logo"
+                fill
+                sizes="48px"
+                className="object-cover"
+                priority
+              />
             </div>
             <span className="font-display text-2xl sm:text-3xl tracking-wider">
               $WINNING

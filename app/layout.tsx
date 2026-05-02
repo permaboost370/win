@@ -19,6 +19,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://win-nine-mu.vercel.app"),
   title: "$WINNING — Can't Stop. Won't Stop.",
   description:
     "$WINNING — the meme coin built on relentless determination. Can't stop. Won't stop. Hustle hard. Win harder.",
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
     description:
       "The meme coin built on relentless determination. Can't stop. Won't stop.",
     type: "website",
+    siteName: "$WINNING",
   },
   twitter: {
     card: "summary_large_image",
