@@ -63,9 +63,10 @@ export default function Hero() {
             The ticker for relentless determination. Built on the only mantra
             that matters:{" "}
             <span className="font-bold text-blood">
-              can&apos;t stop, won&apos;t stop.
+              can&apos;t stop, won&apos;t stop, GameStop.
             </span>{" "}
-            Hustle hard. Win harder. Hold forever.
+            From GME apes to $WINNING degens — hustle hard, win harder, hold
+            forever.
           </p>
 
           <div className="lg:col-span-5 flex flex-col gap-3 items-start lg:items-end">

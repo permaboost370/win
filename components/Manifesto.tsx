@@ -51,11 +51,13 @@ export default function Manifesto() {
               A coin for the <span className="text-blood">hustlers</span>.
             </h2>
             <p className="max-w-xl text-base sm:text-lg leading-relaxed text-bone/85">
-              &ldquo;Can&rsquo;t stop, won&rsquo;t stop&rdquo; is more than a
-              phrase. It&rsquo;s a refusal to be deterred. It&rsquo;s the
-              ambition that builds skylines, breaks records and prints generational
-              bags. <span className="font-bold text-bone">$WINNING</span> is
-              that mantra, tokenized.
+              &ldquo;Can&rsquo;t stop, won&rsquo;t stop,{" "}
+              <span className="font-bold text-blood">GameStop</span>.&rdquo;
+              More than a phrase — it&rsquo;s the rallying cry that turned a
+              dying mall stock into a movement and minted a generation of
+              diamond-handed apes.{" "}
+              <span className="font-bold text-bone">$WINNING</span> is that
+              mantra, tokenized. Same energy. Same hustle. Now on-chain.
             </p>
           </div>
 

@@ -22,7 +22,7 @@ export default function CopyCA({ variant = "light" }: { variant?: "light" | "dar
   return (
     <button
       onClick={onCopy}
-      className={`group inline-flex items-center gap-3 border-2 px-3 py-2 font-mono text-xs sm:text-sm transition-all hover:-translate-y-[2px] active:translate-y-0 ${
+      className={`group inline-flex items-center gap-3 border-2 px-3 py-2 font-mono text-xs sm:text-sm cursor-pointer transition-all hover:-translate-y-[2px] active:translate-y-0 ${
         isDark
           ? "border-bone bg-ink text-bone hover:shadow-[6px_6px_0_0_#d92121]"
           : "border-ink bg-bone text-ink hover:shadow-[6px_6px_0_0_#050505]"

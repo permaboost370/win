@@ -20,7 +20,7 @@ const STEPS = [
   {
     n: "04",
     title: "Hold. Win.",
-    body: "Don't paper-hand the dip. Don't chase the candle. Can't stop. Won't stop. That's the whole strategy.",
+    body: "Don't paper-hand the dip. Don't chase the candle. Diamond hands like a GME ape. Can't stop, won't stop, GameStop. That's the whole strategy.",
   },
 ];
 

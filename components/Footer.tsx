@@ -24,7 +24,11 @@ export default function Footer() {
             </div>
             <p className="text-bone/70 text-sm leading-relaxed">
               The ticker for relentless determination. Built by degens, for
-              degens. <span className="text-blood font-bold">Can&apos;t stop. Won&apos;t stop.</span>
+              degens.{" "}
+              <span className="text-blood font-bold">
+                Can&apos;t stop, won&apos;t stop, GameStop
+              </span>{" "}
+              — now tokenized.
             </p>
           </div>
 

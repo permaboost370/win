@@ -20,21 +20,21 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://win-nine-mu.vercel.app"),
-  title: "$WINNING — Can't Stop. Won't Stop.",
+  title: "$WINNING — Can't Stop, Won't Stop, GameStop.",
   description:
-    "$WINNING — the meme coin built on relentless determination. Can't stop. Won't stop. Hustle hard. Win harder.",
+    "$WINNING — the meme coin built on relentless determination. Can't stop, won't stop, GameStop — the spirit of GME apes, tokenized. Hustle hard. Win harder.",
   openGraph: {
-    title: "$WINNING — Can't Stop. Won't Stop.",
+    title: "$WINNING — Can't Stop, Won't Stop, GameStop.",
     description:
-      "The meme coin built on relentless determination. Can't stop. Won't stop.",
+      "The meme coin carrying the GameStop chant on-chain. Can't stop, won't stop. Diamond hands forever.",
     type: "website",
     siteName: "$WINNING",
   },
   twitter: {
     card: "summary_large_image",
-    title: "$WINNING — Can't Stop. Won't Stop.",
+    title: "$WINNING — Can't Stop, Won't Stop, GameStop.",
     description:
-      "The meme coin built on relentless determination. Can't stop. Won't stop.",
+      "The meme coin carrying the GameStop chant on-chain. Can't stop, won't stop. Diamond hands forever.",
   },
 };
 
