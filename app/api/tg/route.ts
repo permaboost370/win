@@ -1,5 +1,6 @@
 import { NextRequest, after } from "next/server";
 import { fal } from "@fal-ai/client";
+import sharp from "sharp";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -50,6 +51,46 @@ async function getTgFileUrl(fileId: string): Promise<string> {
   const data = await r.json();
   if (!data.ok) throw new Error(`getFile failed: ${JSON.stringify(data)}`);
   return `${TG_API}/file/bot${token}/${data.result.file_path}`;
+}
+
+async function tgSendPhotoBuffer(
+  chatId: number,
+  photo: Buffer,
+  caption?: string,
+  replyTo?: number,
+) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const form = new FormData();
+  form.append("chat_id", String(chatId));
+  if (caption) form.append("caption", caption);
+  if (replyTo) form.append("reply_to_message_id", String(replyTo));
+  form.append("photo", new Blob([new Uint8Array(photo)], { type: "image/jpeg" }), "win-pfp.jpg");
+  const r = await fetch(`${TG_API}/bot${token}/sendPhoto`, { method: "POST", body: form });
+  return r.json();
+}
+
+async function brandImage(imageUrl: string, brandUrl: string): Promise<Buffer> {
+  const [imgRes, brandRes] = await Promise.all([fetch(imageUrl), fetch(brandUrl)]);
+  if (!imgRes.ok) throw new Error(`fetch result image failed: ${imgRes.status}`);
+  if (!brandRes.ok) throw new Error(`fetch brand image failed: ${brandRes.status}`);
+  const imgBuf = Buffer.from(await imgRes.arrayBuffer());
+  const brandBuf = Buffer.from(await brandRes.arrayBuffer());
+
+  const meta = await sharp(imgBuf).metadata();
+  const width = meta.width ?? 1024;
+  const height = meta.height ?? 1024;
+
+  const overlayWidth = Math.round(width * 0.28);
+  const overlay = await sharp(brandBuf).resize({ width: overlayWidth }).png().toBuffer();
+  const overlayMeta = await sharp(overlay).metadata();
+
+  const margin = Math.round(width * 0.04);
+  const top = height - (overlayMeta.height ?? 0) - margin;
+
+  return sharp(imgBuf)
+    .composite([{ input: overlay, left: margin, top }])
+    .jpeg({ quality: 92 })
+    .toBuffer();
 }
 
 async function rememberPromptOwner(chatId: number, msgId: number, userId: number) {
@@ -142,6 +183,7 @@ export async function POST(req: NextRequest) {
   const origin = new URL(req.url).origin;
   const hairUrl = process.env.HAIR_IMAGE_URL || `${origin}/hair-ref.jpg`;
   const sunglassesUrl = process.env.SUNGLASSES_IMAGE_URL || `${origin}/sunglasses-ref.jpg`;
+  const brandUrl = process.env.BRAND_TEXT_URL || `${origin}/brand-text.png`;
 
   try {
     if (command === "start") {
@@ -206,12 +248,27 @@ export async function POST(req: NextRequest) {
           const resultUrl = await generate(dataUrl, hairUrl, sunglassesUrl);
           if (!resultUrl) throw new Error("Generation returned no image");
 
-          await tg("sendPhoto", {
-            chat_id: chatId,
-            photo: resultUrl,
-            caption: "WIN.",
-            ...replyOpts,
-          });
+          let sent = false;
+          try {
+            const branded = await brandImage(resultUrl, brandUrl);
+            await tgSendPhotoBuffer(
+              chatId,
+              branded,
+              "WIN.",
+              isGroup ? message.message_id : undefined,
+            );
+            sent = true;
+          } catch (brandErr) {
+            console.error("brand composite failed, falling back to raw url", brandErr);
+          }
+          if (!sent) {
+            await tg("sendPhoto", {
+              chat_id: chatId,
+              photo: resultUrl,
+              caption: "WIN.",
+              ...replyOpts,
+            });
+          }
 
           if (statusId) {
             await tg("deleteMessage", { chat_id: chatId, message_id: statusId });
