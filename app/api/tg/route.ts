@@ -14,7 +14,7 @@ const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_
 const BOT_USERNAME = (process.env.TELEGRAM_BOT_USERNAME || "win_pfp_bot").toLowerCase();
 
 const PROMPT =
-  "The first image is the user's profile picture and must be preserved pixel-for-pixel. KEEP IDENTICAL to the first image: the face, all facial features, eyes, eyebrows, eye color, eye shape, nose, mouth, lips, teeth, skin, skin tone, complexion, freckles, scars, expression, head shape, ears, jaw, chin, neck, body, pose, clothing, accessories, jewelry, props, background, lighting, composition, framing, and aspect ratio. Do not redraw, restyle, smooth, beautify, retouch, age, de-age, swap, or reinterpret the face or any other part of the first image — the user's identity must remain perfectly recognizable, as if the original was untouched. Add ONLY two elements layered on top of the first image: (1) replace just the hair on top of the head with bright blonde swept-back volumized hair whose silhouette, shape, partline, length, and blonde color match the hair in the second reference image; (2) place black wayfarer-style sunglasses flat over the eye area, with frame shape, lens shape, frame thickness, and proportions matching the sunglasses in the second reference image — the eyes underneath are covered by the opaque lenses but the surrounding face is unchanged. Render the new hair and sunglasses in the same art style and medium as the first image (photo → photoreal, cartoon → cartoon, anime → anime, pixel → pixel, 3D → 3D), matching its linework, palette, shading, and brush style. From the second reference image, use ONLY the hair shape/color and the sunglasses shape — IGNORE its face, skin, body, suit, tie, and background entirely. Do NOT output Donald Trump, and do NOT copy the face from the second reference image onto the character.";
+  "The first image is the user's profile picture and must be preserved pixel-for-pixel. KEEP IDENTICAL to the first image: the face, all facial features, eyes, eyebrows, eye color, eye shape, nose, mouth, lips, teeth, skin, skin tone, complexion, freckles, scars, expression, head shape, ears, jaw, chin, neck, body, pose, clothing, accessories, jewelry, props, background, lighting, composition, framing, and aspect ratio. Do not redraw, restyle, smooth, beautify, retouch, age, de-age, swap, or reinterpret the face or any other part of the first image — the user's identity must remain perfectly recognizable, as if the original was untouched. Add ONLY two elements layered on top of the first image: (1) replace the hair on top of the head with hair that matches the SECOND reference image — bright blonde swept-back volumized hair, copying its exact silhouette, shape, partline, length, brush strokes, and blonde color; (2) place sunglasses over the eye area that match the THIRD reference image — black wayfarer-style frames, copying their exact frame shape, lens shape, frame thickness, and proportions, with opaque lenses that fully cover the eyes underneath while the surrounding face stays unchanged. The second and third reference images are isolated crops of just the hair and just the sunglasses — use them ONLY as shape/color/style references for those two elements; do not copy any skin, forehead, nose, or background fragments visible at the edges of those crops. Render the new hair and sunglasses in the same art style and medium as the first image (photo → photoreal, cartoon → cartoon, anime → anime, pixel → pixel, 3D → 3D), matching its linework, palette, shading, and brush style. Do NOT output Donald Trump and do NOT replace the face — the user's original face from the first image must remain intact under the new hair and behind the new sunglasses.";
 
 type TgMessage = {
   message_id: number;
@@ -68,11 +68,15 @@ async function getPromptOwner(chatId: number, msgId: number): Promise<{ tracked:
   }
 }
 
-async function generate(userImageDataUrl: string, demoUrl: string): Promise<string | undefined> {
+async function generate(
+  userImageDataUrl: string,
+  hairUrl: string,
+  sunglassesUrl: string,
+): Promise<string | undefined> {
   fal.config({ credentials: process.env.FAL_KEY });
   const result = await fal.subscribe("fal-ai/bytedance/seedream/v4/edit", {
     input: {
-      image_urls: [userImageDataUrl, demoUrl],
+      image_urls: [userImageDataUrl, hairUrl, sunglassesUrl],
       prompt: PROMPT,
       image_size: "auto",
       num_images: 1,
@@ -128,7 +132,8 @@ export async function POST(req: NextRequest) {
   }
 
   const origin = new URL(req.url).origin;
-  const demoUrl = process.env.DEMO_IMAGE_URL || `${origin}/demo.jpg`;
+  const hairUrl = process.env.HAIR_IMAGE_URL || `${origin}/hair-ref.jpg`;
+  const sunglassesUrl = process.env.SUNGLASSES_IMAGE_URL || `${origin}/sunglasses-ref.jpg`;
 
   try {
     if (command === "start") {
@@ -190,7 +195,7 @@ export async function POST(req: NextRequest) {
           const mime = imgRes.headers.get("content-type") || "image/jpeg";
           const dataUrl = `data:${mime};base64,${buf.toString("base64")}`;
 
-          const resultUrl = await generate(dataUrl, demoUrl);
+          const resultUrl = await generate(dataUrl, hairUrl, sunglassesUrl);
           if (!resultUrl) throw new Error("Generation returned no image");
 
           await tg("sendPhoto", {
