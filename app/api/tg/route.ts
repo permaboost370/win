@@ -14,7 +14,7 @@ const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_
 const BOT_USERNAME = (process.env.TELEGRAM_BOT_USERNAME || "win_pfp_bot").toLowerCase();
 
 const PROMPT =
-  "Edit the first image. Keep everything from the first image exactly the same — same face, same facial features, same eyes, same nose, same mouth, same skin, same expression, same identity, same body, same pose, same clothes, same background, same art style. The character must remain perfectly recognizable. Make only two changes: (1) replace the hair on top of the head with the blonde swept-back hair from the second reference image — copy its silhouette, shape, length, and bright blonde color; (2) add the black wayfarer sunglasses from the second reference image over the eyes — copy the exact frame and lens shape. From the second reference image, use ONLY the hair and the sunglasses; do not copy its face, skin, body, suit, tie, or background, and do not turn the character into Donald Trump. The output should look like the first image with just blonde hair and black wayfarer sunglasses added.";
+  "The first image is the user's profile picture and must be preserved pixel-for-pixel. KEEP IDENTICAL to the first image: the face, all facial features, eyes, eyebrows, eye color, eye shape, nose, mouth, lips, teeth, skin, skin tone, complexion, freckles, scars, expression, head shape, ears, jaw, chin, neck, body, pose, clothing, accessories, jewelry, props, background, lighting, composition, framing, and aspect ratio. Do not redraw, restyle, smooth, beautify, retouch, age, de-age, swap, or reinterpret the face or any other part of the first image — the user's identity must remain perfectly recognizable, as if the original was untouched. Add ONLY two elements layered on top of the first image: (1) replace just the hair on top of the head with bright blonde swept-back volumized hair whose silhouette, shape, partline, length, and blonde color match the hair in the second reference image; (2) place black wayfarer-style sunglasses flat over the eye area, with frame shape, lens shape, frame thickness, and proportions matching the sunglasses in the second reference image — the eyes underneath are covered by the opaque lenses but the surrounding face is unchanged. Render the new hair and sunglasses in the same art style and medium as the first image (photo → photoreal, cartoon → cartoon, anime → anime, pixel → pixel, 3D → 3D), matching its linework, palette, shading, and brush style. From the second reference image, use ONLY the hair shape/color and the sunglasses shape — IGNORE its face, skin, body, suit, tie, and background entirely. Do NOT output Donald Trump, and do NOT copy the face from the second reference image onto the character.";
 
 type TgMessage = {
   message_id: number;
@@ -70,13 +70,13 @@ async function getPromptOwner(chatId: number, msgId: number): Promise<{ tracked:
 
 async function generate(userImageDataUrl: string, demoUrl: string): Promise<string | undefined> {
   fal.config({ credentials: process.env.FAL_KEY });
-  const result = await fal.subscribe("fal-ai/nano-banana/edit", {
+  const result = await fal.subscribe("fal-ai/bytedance/seedream/v4/edit", {
     input: {
       image_urls: [userImageDataUrl, demoUrl],
       prompt: PROMPT,
-      aspect_ratio: "auto",
+      image_size: "auto",
       num_images: 1,
-      output_format: "jpeg",
+      enhance_prompt_mode: "fast",
     },
     logs: false,
   });
