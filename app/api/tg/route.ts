@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, after } from "next/server";
 import { fal } from "@fal-ai/client";
 
 export const runtime = "nodejs";
@@ -14,7 +14,7 @@ const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_
 const BOT_USERNAME = (process.env.TELEGRAM_BOT_USERNAME || "win_pfp_bot").toLowerCase();
 
 const PROMPT =
-  "The first image is the user's profile picture and must be preserved exactly. KEEP IDENTICAL to the first image: the face, all facial features, eyes, eyebrows, eye color, eye shape, nose, mouth, lips, teeth, skin, skin tone, complexion, freckles, scars, expression, head shape, ears, jaw, chin, neck, body, pose, clothing, accessories, jewelry, props, background, lighting, composition, framing, and aspect ratio. Do not redraw, restyle, smooth, beautify, retouch, age, de-age, or reinterpret the face or any other part of the first image — the user's identity must remain perfectly recognizable, as if the original photo/illustration was untouched. Add ONLY two elements layered on top of the first image: (1) replace the hair on the top of the head with bright blonde swept-back volumized hair whose silhouette, shape, partline, length, and blonde color match the hair in the second reference image; (2) place black wayfarer-style sunglasses flat over the eye area, with frame shape, lens shape, frame thickness, and proportions matching the sunglasses in the second reference image — the eyes underneath are covered by the opaque lenses but the surrounding face is unchanged. Render the new hair and sunglasses in the same art style and medium as the first image (photo → photoreal, cartoon → cartoon, anime → anime, pixel → pixel, 3D → 3D), matching its linework, palette, shading, and brush style. Use the second reference image only as a shape and color reference for the hair and the sunglasses — ignore everything else in it (its face, skin, body, suit, tie, background). Do not output Donald Trump or anyone resembling the person in the second reference image.";
+  "Edit the first image. Keep everything from the first image exactly the same — same face, same facial features, same eyes, same nose, same mouth, same skin, same expression, same identity, same body, same pose, same clothes, same background, same art style. The character must remain perfectly recognizable. Make only two changes: (1) replace the hair on top of the head with the blonde swept-back hair from the second reference image — copy its silhouette, shape, length, and bright blonde color; (2) add the black wayfarer sunglasses from the second reference image over the eyes — copy the exact frame and lens shape. From the second reference image, use ONLY the hair and the sunglasses; do not copy its face, skin, body, suit, tie, or background, and do not turn the character into Donald Trump. The output should look like the first image with just blonde hair and black wayfarer sunglasses added.";
 
 type TgMessage = {
   message_id: number;
@@ -70,12 +70,13 @@ async function getPromptOwner(chatId: number, msgId: number): Promise<{ tracked:
 
 async function generate(userImageDataUrl: string, demoUrl: string): Promise<string | undefined> {
   fal.config({ credentials: process.env.FAL_KEY });
-  const result = await fal.subscribe("fal-ai/bytedance/seedream/v4/edit", {
+  const result = await fal.subscribe("fal-ai/nano-banana/edit", {
     input: {
       image_urls: [userImageDataUrl, demoUrl],
       prompt: PROMPT,
-      image_size: "square_hd",
+      aspect_ratio: "auto",
       num_images: 1,
+      output_format: "jpeg",
     },
     logs: false,
   });
@@ -171,34 +172,48 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      await tg("sendChatAction", { chat_id: chatId, action: "upload_photo" });
-      const statusRes = await tg("sendMessage", {
-        chat_id: chatId,
-        text: "Cooking your WIN pfp… (15–30s)",
-        ...replyOpts,
+      const photoArr = photo;
+      after(async () => {
+        try {
+          await tg("sendChatAction", { chat_id: chatId, action: "upload_photo" });
+          const statusRes = await tg("sendMessage", {
+            chat_id: chatId,
+            text: "Cooking your WIN pfp… (15–30s)",
+            ...replyOpts,
+          });
+          const statusId = statusRes?.result?.message_id;
+
+          const largest = photoArr[photoArr.length - 1];
+          const fileUrl = await getTgFileUrl(largest.file_id);
+          const imgRes = await fetch(fileUrl);
+          const buf = Buffer.from(await imgRes.arrayBuffer());
+          const mime = imgRes.headers.get("content-type") || "image/jpeg";
+          const dataUrl = `data:${mime};base64,${buf.toString("base64")}`;
+
+          const resultUrl = await generate(dataUrl, demoUrl);
+          if (!resultUrl) throw new Error("Generation returned no image");
+
+          await tg("sendPhoto", {
+            chat_id: chatId,
+            photo: resultUrl,
+            caption: "WIN.",
+            ...replyOpts,
+          });
+
+          if (statusId) {
+            await tg("deleteMessage", { chat_id: chatId, message_id: statusId });
+          }
+        } catch (err) {
+          console.error("pfp gen background error", err);
+          try {
+            await tg("sendMessage", {
+              chat_id: chatId,
+              text: "Generation failed. Try again in a moment.",
+              ...replyOpts,
+            });
+          } catch {}
+        }
       });
-      const statusId = statusRes?.result?.message_id;
-
-      const largest = photo[photo.length - 1];
-      const fileUrl = await getTgFileUrl(largest.file_id);
-      const imgRes = await fetch(fileUrl);
-      const buf = Buffer.from(await imgRes.arrayBuffer());
-      const mime = imgRes.headers.get("content-type") || "image/jpeg";
-      const dataUrl = `data:${mime};base64,${buf.toString("base64")}`;
-
-      const resultUrl = await generate(dataUrl, demoUrl);
-      if (!resultUrl) throw new Error("Generation returned no image");
-
-      await tg("sendPhoto", {
-        chat_id: chatId,
-        photo: resultUrl,
-        caption: "WIN.",
-        ...replyOpts,
-      });
-
-      if (statusId) {
-        await tg("deleteMessage", { chat_id: chatId, message_id: statusId });
-      }
     } else if (message.document && !isGroup) {
       await tg("sendMessage", {
         chat_id: chatId,
