@@ -5,9 +5,15 @@ const SRC = "newtext.jpeg";
 const OUT = "public/brand-text.png";
 
 // Tight crop around the text region in newtext.jpeg.
-// Text in source spans roughly x=38..490, y=402..907 — crop with a few px of margin
-// on each side so the dilated halo doesn't get clipped.
-const CROP = { left: 33, top: 395, width: 462, height: 515 };
+// Text in source spans roughly x=38..490, y=402..907 — crop with generous
+// vertical margin so the dilated halo has room to grow on both ends.
+const CROP = { left: 33, top: 388, width: 462, height: 540 };
+
+// After connected-component filtering, force alpha=0 outside this y-band
+// (in cropped coords) so any noise components that survived in the buffer
+// rows above/below the text get nuked. Text occupies cropped y≈14..519.
+const KEEP_Y_MIN = 4;
+const KEEP_Y_MAX = 525;
 
 // Pixel classification thresholds
 const isBlack = (r, g, b) => r < 55 && g < 55 && b < 55;
@@ -23,9 +29,14 @@ const OPEN_RADIUS = 1;
 // blob that survives opening is ~420 px — 800 is a safe cutoff.
 const MIN_COMPONENT_PX = 800;
 
-// Pixels within this radius of a surviving text-core pixel are kept in the
-// final alpha — preserves the white halo around each letter.
-const HALO_RADIUS = 4;
+// Search radius around each text-core pixel for halo pixels. A larger value
+// catches the generous bottom halo without filling the inter-word gaps,
+// because we only mark pixels opaque in this region when they are actually
+// near-white in the source — the dark cityscape pixels stay transparent.
+const HALO_SEARCH_RADIUS = 12;
+
+// "Near-white" threshold used to identify real halo pixels in the source.
+const isHalo = (r, g, b) => r > 200 && g > 200 && b > 200;
 
 const { data, info } = await sharp(SRC).extract(CROP).raw().toBuffer({ resolveWithObject: true });
 const { width: W, height: H, channels: C } = info;
@@ -130,8 +141,26 @@ for (let lbl = 1; lbl < members.length; lbl++) {
   }
 }
 
-// Dilate by HALO_RADIUS to grow the alpha mask out to include the white halo
-const alpha = dilate(textCore, HALO_RADIUS);
+// Zero out core pixels outside the text band — kills any background noise
+// blobs that survived the size filter in the top/bottom buffer rows.
+for (let y = 0; y < H; y++) {
+  if (y >= KEEP_Y_MIN && y <= KEEP_Y_MAX) continue;
+  for (let x = 0; x < W; x++) textCore[y * W + x] = 0;
+}
+
+// Build the halo region: pixels within HALO_SEARCH_RADIUS of any text-core
+// pixel. We'll only keep ones that are actually near-white in the source.
+const haloRegion = dilate(textCore, HALO_SEARCH_RADIUS);
+
+const alpha = new Uint8Array(N);
+for (let i = 0; i < N; i++) {
+  if (textCore[i]) {
+    alpha[i] = 1;
+  } else if (haloRegion[i]) {
+    const si = i * C;
+    if (isHalo(data[si], data[si + 1], data[si + 2])) alpha[i] = 1;
+  }
+}
 
 const rgba = Buffer.alloc(N * 4);
 for (let i = 0; i < N; i++) {
