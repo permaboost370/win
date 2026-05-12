@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 const POINTS = [
   {
@@ -25,7 +28,6 @@ export default function Manifesto() {
   return (
     <section id="manifesto" className="relative bg-charcoal text-bone grain-overlay">
       <div className="mx-auto max-w-7xl px-4 sm:px-8 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-        {/* Image card */}
         <div className="lg:col-span-5">
           <div className="relative aspect-[3/4] w-full border-4 border-bone shadow-[10px_10px_0_0_#d92121] overflow-hidden">
             <Image
@@ -41,7 +43,6 @@ export default function Manifesto() {
           </div>
         </div>
 
-        {/* Text */}
         <div className="lg:col-span-7 flex flex-col gap-8">
           <div className="flex flex-col gap-3">
             <span className="font-mono text-xs uppercase tracking-[0.3em] text-blood">
@@ -62,9 +63,13 @@ export default function Manifesto() {
           </div>
 
           <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {POINTS.map((p) => (
-              <li
+            {POINTS.map((p, i) => (
+              <motion.li
                 key={p.n}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: i * 0.08 }}
                 className="border-4 border-bone bg-ink p-4 shadow-[6px_6px_0_0_#d92121] plate"
               >
                 <div className="font-mono text-xs text-blood">{p.n}</div>
@@ -72,7 +77,7 @@ export default function Manifesto() {
                   {p.title}
                 </div>
                 <p className="text-sm mt-2 text-bone/75">{p.body}</p>
-              </li>
+              </motion.li>
             ))}
           </ul>
         </div>
