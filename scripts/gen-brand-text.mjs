@@ -1,56 +1,108 @@
 import sharp from "sharp";
 import { writeFile } from "node:fs/promises";
 
-const ROWS = [
-  { text: "CANT STOP,", color: "#0a0a0a" },
-  { text: "WONT STOP", color: "#0a0a0a" },
-  { text: "GAMESTOP", color: "#c8161a" },
-  { text: "#WINNING", color: "#c8161a" },
-];
+const SRC = "newtext.jpeg";
+const OUT = "public/brand-text.png";
 
-const FONT_SIZE = 200;
-const STROKE = 14;
-const ROW_GAP = 12;
-const CANVAS_PAD = 20;
+// Tight crop around the text region in newtext.jpeg (left=30, top=380, w=470, h=500)
+const CROP = { left: 30, top: 380, width: 470, height: 500 };
 
-async function renderRow({ text, color }) {
-  const w = 2400;
-  const h = Math.round(FONT_SIZE * 1.35);
-  const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-  <text x="${STROKE}" y="${FONT_SIZE}" fill="${color}" stroke="#ffffff" stroke-width="${STROKE}" paint-order="stroke fill" font-family="Impact, 'Anton', 'Arial Black', 'Helvetica Neue', sans-serif" font-weight="900" font-size="${FONT_SIZE}" letter-spacing="-2">${text}</text>
-</svg>`;
-  const buf = await sharp(Buffer.from(svg)).png().toBuffer();
-  const trimmed = await sharp(buf).trim().toBuffer();
-  const meta = await sharp(trimmed).metadata();
-  return { buf: trimmed, width: meta.width ?? 0, height: meta.height ?? 0 };
+// Pixel classification thresholds
+const isBlack = (r, g, b) => r < 55 && g < 55 && b < 55;
+const isRed = (r, g, b) => r > 130 && g < 80 && b < 80 && r > g * 1.8 && r > b * 1.8;
+
+// Drop connected components smaller than this — removes tiny background noise blobs
+const MIN_COMPONENT_PX = 300;
+
+// Pixels within this radius of a text pixel are kept (preserves white halo)
+const HALO_RADIUS = 4;
+
+const { data, info } = await sharp(SRC).extract(CROP).raw().toBuffer({ resolveWithObject: true });
+const { width: W, height: H, channels: C } = info;
+const N = W * H;
+
+const isText = new Uint8Array(N);
+for (let y = 0; y < H; y++) {
+  for (let x = 0; x < W; x++) {
+    const i = (y * W + x) * C;
+    const r = data[i], g = data[i + 1], b = data[i + 2];
+    if (isBlack(r, g, b) || isRed(r, g, b)) isText[y * W + x] = 1;
+  }
 }
 
-const rendered = await Promise.all(ROWS.map(renderRow));
-const maxW = Math.max(...rendered.map((r) => r.width));
-const totalH = rendered.reduce((s, r) => s + r.height, 0) + ROW_GAP * (rendered.length - 1);
-
-const canvasW = maxW + CANVAS_PAD * 2;
-const canvasH = totalH + CANVAS_PAD * 2;
-
-const composites = [];
-let y = CANVAS_PAD;
-for (const r of rendered) {
-  composites.push({ input: r.buf, left: CANVAS_PAD, top: y });
-  y += r.height + ROW_GAP;
+// Connected-component labeling (4-connectivity, iterative DFS) to drop small blobs
+const label = new Int32Array(N);
+const stack = new Int32Array(N);
+let nextLabel = 1;
+const sizes = [0];
+const members = [null];
+for (let s = 0; s < N; s++) {
+  if (!isText[s] || label[s]) continue;
+  let top = 0;
+  stack[top++] = s;
+  label[s] = nextLabel;
+  const mem = [s];
+  while (top > 0) {
+    const p = stack[--top];
+    const x = p % W, y = (p - x) / W;
+    const neigh = [];
+    if (x > 0) neigh.push(p - 1);
+    if (x < W - 1) neigh.push(p + 1);
+    if (y > 0) neigh.push(p - W);
+    if (y < H - 1) neigh.push(p + W);
+    for (const q of neigh) {
+      if (isText[q] && !label[q]) {
+        label[q] = nextLabel;
+        stack[top++] = q;
+        mem.push(q);
+      }
+    }
+  }
+  sizes.push(mem.length);
+  members.push(mem);
+  nextLabel++;
 }
 
-const png = await sharp({
-  create: {
-    width: canvasW,
-    height: canvasH,
-    channels: 4,
-    background: { r: 0, g: 0, b: 0, alpha: 0 },
-  },
-})
-  .composite(composites)
+const keepTextCore = new Uint8Array(N);
+for (let lbl = 1; lbl < members.length; lbl++) {
+  if (sizes[lbl] >= MIN_COMPONENT_PX) {
+    for (const p of members[lbl]) keepTextCore[p] = 1;
+  }
+}
+
+// Dilate the kept text by HALO_RADIUS to include the white halo around letters
+const alpha = new Uint8Array(N);
+for (let y = 0; y < H; y++) {
+  for (let x = 0; x < W; x++) {
+    if (!keepTextCore[y * W + x]) continue;
+    const x0 = Math.max(0, x - HALO_RADIUS);
+    const x1 = Math.min(W - 1, x + HALO_RADIUS);
+    const y0 = Math.max(0, y - HALO_RADIUS);
+    const y1 = Math.min(H - 1, y + HALO_RADIUS);
+    for (let yy = y0; yy <= y1; yy++) {
+      for (let xx = x0; xx <= x1; xx++) {
+        const dx = xx - x, dy = yy - y;
+        if (dx * dx + dy * dy <= HALO_RADIUS * HALO_RADIUS) alpha[yy * W + xx] = 255;
+      }
+    }
+  }
+}
+
+// Build RGBA buffer: keep original RGB, set alpha from mask
+const rgba = Buffer.alloc(N * 4);
+for (let i = 0; i < N; i++) {
+  const si = i * C;
+  rgba[i * 4 + 0] = data[si];
+  rgba[i * 4 + 1] = data[si + 1];
+  rgba[i * 4 + 2] = data[si + 2];
+  rgba[i * 4 + 3] = alpha[i];
+}
+
+const png = await sharp(rgba, { raw: { width: W, height: H, channels: 4 } })
+  .trim()
   .png()
   .toBuffer();
 
-await writeFile("public/brand-text.png", png);
-console.log("wrote public/brand-text.png", canvasW, "x", canvasH, png.length, "bytes");
+await writeFile(OUT, png);
+const out = await sharp(png).metadata();
+console.log(`wrote ${OUT}: ${out.width} x ${out.height} (${png.length} bytes)`);
